@@ -1,0 +1,35 @@
+help
+clear
+
+# --- БЗ в предикатной форме ---
+fact(has(u1, passport))
+fact(has(u1, ticket))
+fact(has(u1, visa))
+
+rule(can_board(U) :- has(U, passport), has(U, ticket).)
+rule(can_fly_international(U) :- can_board(U), has(U, visa).)
+
+list_kb
+
+# СИТУАЦИЯ 1: все документы есть -> TRUE
+goal(can_fly_international(u1))
+
+# СИТУАЦИЯ 2: нет визы -> FALSE
+clear
+fact(has(u2, passport))
+fact(has(u2, ticket))
+rule(can_board(U) :- has(U, passport), has(U, ticket).)
+rule(can_fly_international(U) :- can_board(U), has(U, visa).)
+goal(can_fly_international(u2))
+
+# СИТУАЦИЯ 3: запрос с переменной (подстановка U=...)
+clear
+fact(has(u1, passport))
+fact(has(u1, ticket))
+fact(has(u1, visa))
+fact(has(u3, passport))
+fact(has(u3, ticket))
+# u3 без визы
+rule(can_board(U) :- has(U, passport), has(U, ticket).)
+rule(can_fly_international(U) :- can_board(U), has(U, visa).)
+goal(can_fly_international(U))

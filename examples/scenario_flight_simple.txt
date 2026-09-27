@@ -1,0 +1,29 @@
+help
+clear
+
+# СИТУАЦИЯ 1 (норм): всё есть -> можно лететь международно (ИСТИНА)
+alp([has_passport, has_ticket, has_visa])
+axi(has_passport*has_ticket -> can_board)
+axi(can_board*has_visa -> can_fly_international)
+list_alp
+list_axi
+theorem(can_fly_international)
+
+# СИТУАЦИЯ 2 (проблема): нет визы -> международный перелёт не выводится (ЛОЖЬ)
+clear
+alp([has_passport, has_ticket])
+axi(has_passport*has_ticket -> can_board)
+axi(can_board*has_visa -> can_fly_international)
+list_alp
+list_axi
+theorem(can_fly_international)
+
+# СИТУАЦИЯ 3 (проблема): нет билета -> даже посадка НЕ выводится (ЛОЖЬ)
+clear
+alp([has_passport, has_visa])
+axi(has_passport*has_ticket -> can_board)
+axi(can_board*has_visa -> can_fly_international)
+list_alp
+list_axi
+theorem(can_board)
+theorem(can_fly_international)
