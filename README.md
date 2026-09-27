@@ -1,5 +1,6 @@
 # Mini Logic Engines
 
+[![Checks](https://github.com/Germanskii/mini-logic-engines/actions/workflows/checks.yml/badge.svg)](https://github.com/Germanskii/mini-logic-engines/actions/workflows/checks.yml)
 Explore propositional logic and a small Prolog-style inference engine implemented in Python.
 
 ## Engines
@@ -14,6 +15,8 @@ The included fictional flight-document scenarios demonstrate positive and negati
 Python 3.12 was used for local validation. Run commands from the repository root.
 
 ```bash
+git clone https://github.com/Germanskii/mini-logic-engines.git
+cd mini-logic-engines
 python -m venv .venv
 # Linux/macOS:
 source .venv/bin/activate
@@ -25,11 +28,7 @@ python -m src.miniprolog examples/scenario_pr2_flight.txt
 
 The engines use only the Python standard library.
 
-```bash
-python -m src.miniprolog examples/scenario_pr2_flight.txt
-```
-
-The cleaned Colab/Jupyter experiment is in [`notebooks/experiment.ipynb`](notebooks/experiment.ipynb). To open it locally, install Jupyter separately (`python -m pip install jupyterlab`) and run `jupyter lab`. Command-line runs save figures instead of requiring an interactive window.
+[Open in Colab](https://colab.research.google.com/github/Germanskii/mini-logic-engines/blob/main/notebooks/experiment.ipynb). The cleaned Colab/Jupyter experiment is in [`notebooks/experiment.ipynb`](notebooks/experiment.ipynb). To open it locally, install Jupyter separately (`python -m pip install jupyterlab`) and run `jupyter lab`.
 
 ## Data
 
@@ -40,15 +39,21 @@ The examples are fictional symbolic facts, not personal travel records. No exter
 Both included scenarios execute locally. Tests cover Boolean laws, occurs-check rejection, variable substitution and depth-exhaustion reporting. See [VALIDATION.md](VALIDATION.md) for exactly what was checked. No historical notebook output is used as evidence for the corrected implementation.
 
 ```bash
+python -m pip install -r requirements-dev.txt
 python -m unittest discover -s tests -v
 ```
+
+GitHub Actions runs the regression tests and validates notebook structure on pushes and pull requests. It does not download training datasets or establish model accuracy.
 
 ## Repository layout
 
 - `src/`: importable implementation and command-line entry points.
 - `notebooks/`: cleaned experiment notebook; original explanatory notes are in Russian.
 - `tests/`: focused regression checks.
-- `requirements.txt`: direct dependency versions used during validation.
+- `requirements.txt`: documents that the engines need only the standard library.
 - `DATA.md`: data access and redistribution notes.
 
 This project was developed from a university Colab experiment and subsequently cleaned up for reproducibility. Generated data, trained weights and local paths are excluded from version control.
+
+
+The portfolio cleanup and packaging used AI-assisted development. The notebooks derive from the original university work; validation limits are documented above.
