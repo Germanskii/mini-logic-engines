@@ -12,7 +12,8 @@ The included fictional flight-document scenarios demonstrate positive and negati
 
 ## Quick start
 
-Python 3.12 was used for local validation. Run commands from the repository root.
+Use **Python 3.12** for the pinned environment. The October recheck used Python
+3.12.10 on Windows CPU. Run commands from the repository root.
 
 ```bash
 git clone https://github.com/Germanskii/mini-logic-engines.git
@@ -21,12 +22,25 @@ python -m venv .venv
 # Linux/macOS:
 source .venv/bin/activate
 # Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m src.minilogic examples/scenario_flight_simple.txt
 python -m src.miniprolog examples/scenario_pr2_flight.txt
 ```
 
 The engines use only the Python standard library.
+
+### Rule syntax and variable scope
+
+In MiniProlog, each `_` is an independent anonymous variable: `pair(_,_)` can
+match `pair(alice,bob)`. Repeated named variables, including `_Same`, must agree.
+Anonymous bindings are omitted from query results.
+
+MiniLogic has a teaching-specific rule shorthand: `axi(a -> b+c)` adds both
+`a -> b` and `a -> c`. This rule command does **not** implement classical
+disjunctive inference. The Boolean-expression commands (`truth`, `sat`, `valid`
+and `equiv`) still interpret `+` as OR. Use the engines to explore these explicit
+semantics rather than treating the rule language as a general theorem prover.
 
 [Open in Colab](https://colab.research.google.com/github/Germanskii/mini-logic-engines/blob/main/notebooks/experiment.ipynb). The cleaned Colab/Jupyter experiment is in [`notebooks/experiment.ipynb`](notebooks/experiment.ipynb). To open it locally, install Jupyter separately (`python -m pip install jupyterlab`) and run `jupyter lab`.
 
@@ -43,7 +57,7 @@ python -m pip install -r requirements-dev.txt
 python -m unittest discover -s tests -v
 ```
 
-GitHub Actions runs the regression tests and validates notebook structure on pushes and pull requests. It does not download training datasets or establish model accuracy.
+GitHub Actions runs the regression tests, both example scripts and notebook format checks.
 
 ## Repository layout
 

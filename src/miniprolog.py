@@ -306,6 +306,9 @@ def p_tokenize(s: str) -> List[PTok]:
     return out
 
 class PParser:
+    # '$' cannot appear in user identifiers, so generated names cannot collide.
+    _anonymous_ids = itertools.count()
+
     def __init__(self, toks: List[PTok]):
         self.toks = toks
         self.i = 0
@@ -327,6 +330,8 @@ class PParser:
             raise ValueError("Ожидался терм")
         name = self.eat("ID").val
         # переменная: начинается с заглавной или '_'
+        if name == "_":
+            return Var(f"$anonymous{next(self._anonymous_ids)}")
         if name[0].isupper() or name[0] == "_":
             return Var(name)
 
@@ -575,7 +580,10 @@ class MiniPrologKB:
         self.max_depth = max_depth
         self.depth_exceeded = False
         goals0 = parse_query_atoms(query_text)
-        query_vars = set().union(*(vars_in_atom(g) for g in goals0))
+        query_vars = {
+            name for g in goals0 for name in vars_in_atom(g)
+            if not name.startswith("$anonymous")
+        }
 
         if trace:
             print("=== SLD-вывод (трассировка) ===")
@@ -654,7 +662,7 @@ class MiniPrologKB:
 
 def pretty_term(t: Term) -> str:
     if isinstance(t, Var):
-        return t.name
+        return "_" if t.name.startswith("$anonymous") else t.name
     if isinstance(t, Const):
         return t.name
     if isinstance(t, Func):

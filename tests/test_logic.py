@@ -4,6 +4,25 @@ import unittest
 from src import minilogic as ml, miniprolog as mp
 
 class LogicTest(unittest.TestCase):
+    def test_anonymous_variables_are_independent(self):
+        kb = mp.MiniPrologKB()
+        kb.add_fact('pair(alice,bob).')
+        kb.add_rule('any_pair :- pair(_,_).')
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(len(kb.solve('pair(_,_)', trace=False)), 1)
+            self.assertEqual(kb.solve('pair(_Same,_Same)', trace=False), [])
+            self.assertEqual(len(kb.solve('any_pair', trace=False)), 1)
+
+    def test_anonymous_bindings_are_not_reported(self):
+        kb = mp.MiniPrologKB()
+        kb.add_fact('pair(alice,bob).')
+        capture = io.StringIO()
+        with contextlib.redirect_stdout(capture):
+            solutions = kb.solve('pair(_,Who)', trace=False)
+        self.assertEqual(mp.apply_subst_term(mp.Var('Who'), solutions[0]), mp.Const('bob'))
+        self.assertIn('Who = bob', capture.getvalue())
+        self.assertNotIn('$anonymous', capture.getvalue())
+
     def test_boolean_laws(self):
         self.assertTrue(ml.is_tautology('a+!a'))
         self.assertFalse(ml.is_satisfiable('a*!a'))
